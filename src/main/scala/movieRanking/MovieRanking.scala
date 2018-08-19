@@ -1,4 +1,4 @@
-package movie
+package movieRanking
 
 import org.apache.flink.api.scala._
 import org.apache.flink.core.fs.FileSystem.WriteMode
@@ -12,11 +12,14 @@ case class RatingRecord(userId: Int, movieId: Int,
 
 case class MovieRecord(id: Int, title: String)
 
-object MovieRanking extends App {
-  val dataPath = "/tmp/the-movies-dataset"
+trait Context {
+  lazy val env: ExecutionEnvironment = ExecutionEnvironment.getExecutionEnvironment
 
-  val env = ExecutionEnvironment.getExecutionEnvironment
-  val tEnv = TableEnvironment.getTableEnvironment(env)
+  lazy val tEnv: BatchTableEnvironment = TableEnvironment.getTableEnvironment(env)
+}
+
+object MovieRanking extends App with Context {
+  val dataPath = "/tmp/the-movies-dataset"
 
   val ratings = env
     .readCsvFile[RatingRecord](
@@ -60,8 +63,10 @@ object MovieRanking extends App {
       includedFields = Array(5, 8)
   ).toTable(tEnv, 'id, 'title)
 
-  val result = ranking
-    .join(movies, 'movieId === 'id)
+  val moviesRatingsJoin = movies
+    .join(
+      ranking,
+      'movieId === 'id)
     .orderBy('rankingRate.desc)
     .fetch(100)
 
@@ -70,7 +75,7 @@ object MovieRanking extends App {
     "\t",
     1,
     WriteMode.OVERWRITE)
-  result.writeToSink(sink)
+  moviesRatingsJoin.writeToSink(sink)
 
   env.execute()
 }
