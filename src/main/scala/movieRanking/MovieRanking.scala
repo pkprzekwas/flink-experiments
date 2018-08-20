@@ -29,6 +29,15 @@ object MovieRanking extends App with Context {
   tEnv.registerDataSet("ratings", ratings,
     'userId, 'movieId, 'rating, 'timestamp)
 
+  val movies = env
+    .readCsvFile[MovieRecord](
+    s"$dataPath/movies_metadata.csv",
+    quoteCharacter = '"',
+    ignoreFirstLine = true,
+    lenient = true,
+    includedFields = Array(5, 8)
+  ).toTable(tEnv, 'id, 'title)
+
   val globalAverageMovieRate = ratings
     .toTable(tEnv, 'userId, 'movieId, 'rating, 'timestamp)
     .select('rating.avg)
@@ -53,15 +62,6 @@ object MovieRanking extends App with Context {
        |  GROUP BY movieId
        |) sub
     """.stripMargin)
-
-  val movies = env
-    .readCsvFile[MovieRecord](
-      s"$dataPath/movies_metadata.csv",
-      quoteCharacter = '"',
-      ignoreFirstLine = true,
-      lenient = true,
-      includedFields = Array(5, 8)
-  ).toTable(tEnv, 'id, 'title)
 
   val moviesRatingsJoin = movies
     .join(
