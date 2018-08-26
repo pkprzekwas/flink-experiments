@@ -1,22 +1,14 @@
-package movieRanking
+package ranking
 
 import org.apache.flink.api.scala._
 import org.apache.flink.core.fs.FileSystem.WriteMode
-import org.apache.flink.table.api.TableEnvironment
 import org.apache.flink.table.api.scala._
 import org.apache.flink.table.sinks.CsvTableSink
 
+import helpers.Context
 
-case class RatingRecord(userId: Int, movieId: Int,
-                        rating: Double, timestamp: Long)
-
+case class RatingRecord(userId: Int, movieId: Int, rating: Double, timestamp: Long)
 case class MovieRecord(id: Int, title: String)
-
-trait Context {
-  lazy val env: ExecutionEnvironment = ExecutionEnvironment.getExecutionEnvironment
-
-  lazy val tEnv: BatchTableEnvironment = TableEnvironment.getTableEnvironment(env)
-}
 
 object MovieRanking extends App with Context {
   val dataPath = "/tmp/the-movies-dataset"
