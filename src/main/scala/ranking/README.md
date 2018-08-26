@@ -1,4 +1,4 @@
-## Movie ranking implementation (Flink)
+# Movie ranking implementation (Flink)
 
 This package consists of example implementation of movie ranking based on The Movies Dataset from Kaggle. Movies are ranked based on IMDB weighted score formula.
 
@@ -13,7 +13,7 @@ This package consists of example implementation of movie ranking based on The Mo
 - m = minimum votes required to be listed in the Top 250 (currently 25000)
 - C = the mean vote across the whole report (currently 7.0)
 
-### Dataset
+## Dataset
 
 Link: https://www.kaggle.com/rounakbanik/the-movies-dataset
 
