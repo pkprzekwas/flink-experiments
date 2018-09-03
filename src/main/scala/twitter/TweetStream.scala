@@ -18,7 +18,7 @@ object TweetStream extends App with Context {
   val properties = new Properties()
   properties.setProperty("bootstrap.servers", "localhost:9092")
   properties.setProperty("zookeeper.connect", "localhost:2181")
-  properties.setProperty("group.id", "twitter-stream")
+  properties.setProperty("group.id", "twitter_stream")
 
   val twitterStream = sEnv
     .addSource(new FlinkKafkaConsumer08[String](
