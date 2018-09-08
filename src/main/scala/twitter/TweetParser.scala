@@ -8,6 +8,7 @@ object TweetParser {
     val text = tweet.get("text").asText()
     val lang = tweet.get("lang").asText()
     val source = tweet.get("source").asText()
+    val favCnt = tweet.get("favorite_count").asInt()
 
     val userNode = tweet.get("user")
     val placeNode = tweet.get("place")
@@ -15,7 +16,7 @@ object TweetParser {
     val user = parseUser(userNode)
     val place = parsePlace(placeNode)
 
-    Tweet(tweetId, user, text, source, place, lang)
+    Tweet(tweetId, user, text, source, place, lang, favCnt)
   }
 
   def parseUser(user: JsonNode): User = {
